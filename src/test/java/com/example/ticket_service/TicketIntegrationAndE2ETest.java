@@ -189,7 +189,13 @@ class TicketIntegrationAndE2ETest {
         assertEquals(TicketStatus.CANCELLED, ticketRepository.findById(ticketId).orElseThrow().getStatus());
         assertEquals(historyCountBefore, historyRepository.count());
     }
-
+    @Test
+    void regression_invalidPaginationParams_returnsUnified400() throws Exception {
+        mockMvc.perform(get("/api/tickets")
+                        .param("size", "500"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
     private Long createSampleTicket(String title, TicketPriority priority, Instant dueDate) throws Exception {
         CreateTicketRequest req = new CreateTicketRequest(title, "Тестовое описание", 1L, priority, dueDate);
         MvcResult result = mockMvc.perform(post("/api/tickets")

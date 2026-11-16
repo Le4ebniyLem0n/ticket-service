@@ -67,6 +67,9 @@ public class TicketController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        if (page < 0 || size < 1 || size > 100) {
+            throw new IllegalArgumentException("Параметр page должен быть >= 0, а size в диапазоне от 1 до 100");
+        }
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         return ticketService.searchTickets(status, priority, categoryId, overdue, pageable);
     }

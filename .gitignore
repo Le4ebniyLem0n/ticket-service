@@ -37,3 +37,5 @@ out/
 .vscode/
 backup.sql
 .env
+docs/.postman/
+docs/postman/

@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "Ticket Service API",
+    "schema": "https://getpostman.com"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        }
+      }
+    },
+    {
+      "name": "2. Получить категории",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/categories",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "categories"]
+        }
+      }
+    },
+    {
+      "name": "3. Создать заявку",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Не печатает сетевой принтер в каб. 304\",\n  \"description\": \"Ошибка соединения при отправке на печать\",\n  \"categoryId\": 1,\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-12-01T18:00:00Z\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        }
+      }
+    },
+    {
+      "name": "4. Получить заявку по ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1"]
+        }
+      }
+    },
+    {
+      "name": "5. Взять заявку в работу (NEW -> IN_PROGRESS)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"comment\": \"Принял в работу\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        }
+      }
+    },
+    {
+      "name": "6. Закрыть заявку (IN_PROGRESS -> RESOLVED)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"RESOLVED\",\n  \"comment\": \"Проблема устранена\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        }
+      }
+    },
+    {
+      "name": "7. Попытка изменить закрытую заявку (Ожидаем 409)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"comment\": \"Попытка повторно открыть\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        }
+      }
+    },
+    {
+      "name": "8. История статусов заявки",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/history",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "history"]
+        }
+      }
+    },
+    {
+      "name": "9. Поиск с фильтрами и пагинацией",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets?status=RESOLVED&page=0&size=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"],
+          "query": [
+            { "key": "status", "value": "RESOLVED" },
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "10. Сводная статистика (Kotlin)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/summary?from=2026-11-01T00:00:00Z&to=2026-12-01T00:00:00Z",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "reports", "summary"],
+          "query": [
+            { "key": "from", "value": "2026-11-01T00:00:00Z" },
+            { "key": "to", "value": "2026-12-01T00:00:00Z" }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -82,7 +82,7 @@ jobs:
         run: |
           cp .env.example .env
           export IMAGE_TAG=sha-${GITHUB_SHA::7}
-          docker compose up -d
+          docker compose up -d --pull never
           for i in {1..15}; do
             if curl -sf http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
               echo "Smoke check passed: /actuator/health is UP"

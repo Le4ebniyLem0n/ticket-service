@@ -79,10 +79,15 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: 5. Deploy to staging environment & run Smoke Test
+        env:
+          POSTGRES_DB: tickets_db
+          POSTGRES_USER: tickets_user
+          POSTGRES_PASSWORD: tickets_pass
+          APP_PORT: 8080
+          IMAGE_TAG: sha-${{ github.sha }}
         run: |
-          cp .env.example .env
           export IMAGE_TAG=sha-${GITHUB_SHA::7}
-          docker compose up -d --pull never
+          docker compose up -d
           for i in {1..15}; do
             if curl -sf http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
               echo "Smoke check passed: /actuator/health is UP"
@@ -94,3 +99,4 @@ jobs:
           docker compose logs
           docker compose down
           exit 1
+   
